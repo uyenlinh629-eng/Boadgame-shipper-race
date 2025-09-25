@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Shipper Race — Official Store</title>
+  <style>
+    :root{--bg:#FFF9F6;--primary:#E53935;--accent:#FFC857;--muted:#6B7280;--card:#FFFFFF;--glass:rgba(255,255,255,0.6);--radius:12px;--maxw:1200px}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,Roboto,Arial;background:linear-gradient(180deg,var(--bg),#fff);color:#111}
+    a{color:inherit}
+
+    /* Layout */
+    .wrap{max-width:var(--maxw);margin:18px auto;padding:16px}
+    header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--primary),#FF7A5A);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800}
+    nav{display:flex;gap:8px;align-items:center}
+    nav a{padding:8px 12px;border-radius:10px;text-decoration:none;color:var(--muted);font-weight:600}
+    nav a.active{background:var(--primary);color:#fff}
+    .cta{display:flex;gap:8px}
+    .btn{padding:8px 12px;border-radius:10px;border:0;cursor:pointer;font-weight:700}
+    .btn-primary{background:var(--primary);color:#fff}
+    .btn-ghost{background:transparent;border:2px solid rgba(0,0,0,0.06)}
+
+    /* Hero */
+    .hero{display:grid;grid-template-columns:1fr 420px;gap:18px;margin-top:18px}
+    .hero-card{background:var(--card);padding:22px;border-radius:16px;box-shadow:0 10px 30px rgba(20,20,20,0.06)}
+    h1{font-size:30px;margin:0 0 8px}
+    p.lead{color:var(--muted);margin:0}
+
+    .hero-ill{border-radius:12px;overflow:hidden;display:flex;align-items:center;justify-content:center;height:100%;background:linear-gradient(180deg,#E6F7FF,#fff)}
+
+    /* sections */
+    section{margin-top:20px}
+    .card{background:var(--card);padding:14px;border-radius:12px;box-shadow:0 8px 18px rgba(20,20,20,0.04)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+    .product-thumb{height:160px;border-radius:10px;background:linear-gradient(135deg,#FFF0E6,#FFE6D6);display:flex;align-items:center;justify-content:center;font-weight:700;color:#2b2b2b}
+
+    /* Shop */
+    .shop-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+    .price{font-weight:800;color:var(--primary)}
+
+    /* Cart panel */
+    .cart-panel{position:fixed;right:18px;bottom:18px;width:360px;max-height:76vh;overflow:auto;border-radius:12px;padding:12px;background:linear-gradient(180deg,rgba(255,255,255,0.98),#fff);box-shadow:0 18px 40px rgba(11,11,11,0.12);display:none}
+    .cart-item{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #f1f1f1}
+    .cart-item .mini{width:56px;height:44px;background:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center}
+    .qty{display:flex;align-items:center;gap:6px}
+    .qty button{padding:6px 8px;border-radius:6px;border:0;cursor:pointer}
+
+    /* Product detail modal */
+    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.4);padding:20px}
+    .modal .sheet{background:#fff;border-radius:12px;max-width:920px;width:100%;padding:18px}
+    .sheet .left{width:48%;}
+    .sheet .right{width:52%;}
+    .row{display:flex;gap:12px}
+
+    /* Contact */
+    form input, form textarea{width:100%;padding:10px;border-radius:8px;border:1px solid #eee;margin-top:8px}
+    form label{font-weight:700}
+
+    /* Community */
+    .posts{display:flex;flex-direction:column;gap:10px}
+    .post{padding:10px;border-radius:10px;background:#fff}
+
+    footer{margin-top:30px;padding:16px;color:var(--muted);text-align:center}
+
+    /* responsive */
+    @media (max-width:980px){.hero{grid-template-columns:1fr}.sheet .left,.sheet .right{width:100%}.row{flex-direction:column}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo">SR</div>
+        <div>
+          <div style="font-weight:800">Shipper Race</div>
+          <div style="font-size:13px;color:var(--muted)">Behind the package — Board game</div>
+        </div>
+      </div>
+
+      <nav>
+        <a href="#home" data-link class="active">Trang chủ</a>
+        <a href="#about" data-link>Về trò chơi</a>
+        <a href="#shop" data-link>Sản phẩm</a>
+        <a href="#community" data-link>Cộng đồng</a>
+        <a href="#contact" data-link>Liên hệ</a>
+      </nav>
+
+      <div class="cta">
+        <button id="openCartBtn" class="btn btn-primary">Giỏ hàng 🛒 <span id="cartBadge" style="margin-left:8px;background:var(--accent);padding:2px 6px;border-radius:999px;color:#2b2b2b;font-weight:700;display:none">0</span></button>
+      </div>
+    </header>
+
+    <!-- HERO -->
+    <div id="home" class="hero">
+      <div class="hero-card">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><div style="background:var(--accent);padding:6px 10px;border-radius:999px;font-weight:800">NEW</div><div style="color:var(--muted);font-weight:700">Preorder</div></div>
+        <h1>Shipper Race — "Behind the package"</h1>
+        <p class="lead">Board game khám phá hành trình gói hàng trên các con đường Việt Nam: chiến thuật, may rủi, tương tác cộng đồng. Dễ học, vui chơi cùng bạn bè và gia đình.</p>
+
+        <div style="margin-top:16px;display:flex;gap:10px">
+          <button class="btn btn-primary" onclick="goTo('shop')">Mua/Đặt trước</button>
+          <button class="btn btn-ghost" onclick="openTrailer()">Xem trailer</button>
+        </div>
+
+        <div style="margin-top:18px;color:var(--muted)"><strong>Key hook:</strong> "Behind the package" — hiểu hơn nỗ lực sau mỗi gói hàng.</div>
+      </div>
+
+      <div class="hero-ill card">
+        <!-- Simple illustrative SVG / placeholder image -->
+        <svg width="400" height="260" viewBox="0 0 420 300" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0" y="0" width="420" height="300" rx="12" fill="#fff" />
+          <g transform="translate(10,10)">
+            <rect x="8" y="28" width="388" height="20" rx="10" fill="#2f2f2f"/>
+            <rect x="8" y="112" width="388" height="20" rx="10" fill="#2f2f2f"/>
+            <rect x="8" y="196" width="388" height="20" rx="10" fill="#2f2f2f"/>
+            <rect x="300" y="30" width="60" height="40" rx="8" fill="#FF7A5A"/>
+            <circle cx="320" cy="240" r="14" fill="#111"/>
+            <circle cx="360" cy="240" r="14" fill="#111"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <!-- ABOUT -->
+    <section id="about" class="card">
+      <h2 style="margin-top:0">Về Shipper Race</h2>
+      <p style="color:var(--muted)">Shipper Race là board game phiêu lưu nhập vai mô phỏng hành trình giao hàng: người chơi hoá thân thành shipper, di chuyển trên bản đồ Việt Nam, đối mặt với sự cố, dùng thẻ hỗ trợ, và cạnh tranh thời gian lẫn điểm số. Trò chơi tập trung vào trải nghiệm xã hội, tính lặp lại cao và dễ tiếp cận.</p>
+
+      <div style="display:flex;gap:12px;margin-top:12px;flex-wrap:wrap">
+        <div style="flex:1;min-width:220px">
+          <h4>Stakeholders</h4>
+          <ul style="color:var(--muted);margin-left:18px">
+            <li>Supervisor: Ms. Duong</li>
+            <li>KOLs: Indeimaus, mythymoo, fireb0rn</li>
+            <li>Founders: Hai Dong, Y Yen, Xuan Hieu, Thuy Duong</li>
+          </ul>
+        </div>
+        <div style="flex:1;min-width:220px">
+          <h4>Mục tiêu</h4>
+          <ul style="color:var(--muted);margin-left:18px">
+            <li>Thu hút cộng đồng board game</li>
+            <li>Truyền tải thông điệp "Behind the package"</li>
+            <li>Khuyến khích người chơi chia sẻ chiến thuật</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SHOP -->
+    <section id="shop">
+      <h2>Sản phẩm</h2>
+      <div class="shop-grid" id="productGrid"></div>
+    </section>
+
+    <!-- COMMUNITY -->
+    <section id="community" class="card">
+      <h2>Cộng đồng người chơi</h2>
+      <p style="color:var(--muted)">Chia sẻ ảnh, chiến thuật, clip stream. Tham gia thử thách #BehindThePackage để nhận phần quà.</p>
+
+      <div style="margin-top:10px;display:flex;gap:8px;align-items:center">
+        <input id="postInput" placeholder="Chia sẻ trải nghiệm của bạn..." style="flex:1;padding:10px;border-radius:8px;border:1px solid #eee" />
+        <button class="btn btn-primary" onclick="addPost()">Đăng</button>
+      </div>
+
+      <div class="posts" id="posts"></div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="card">
+      <h2>Liên hệ</h2>
+      <p style="color:var(--muted)">Gửi thắc mắc, hợp tác KOL, báo lỗi sản phẩm hoặc yêu cầu đặt hàng số lượng lớn.</p>
+      <form id="contactForm" style="margin-top:10px">
+        <label>Họ và tên</label>
+        <input name="name" required />
+        <label>Email / Số điện thoại</label>
+        <input name="contact" required />
+        <label>Nội dung</label>
+        <textarea name="message" rows="4" required></textarea>
+        <div style="margin-top:10px;display:flex;gap:8px;justify-content:flex-end">
+          <button type="submit" class="btn btn-primary">Gửi</button>
+          <button type="button" class="btn btn-ghost" onclick="document.getElementById('contactForm').reset()">Huỷ</button>
+        </div>
+      </form>
+    </section>
+
+    <footer>
+      <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;align-items:center">
+        <div>
+          <strong>Shipper Race</strong>
+          <div style="color:var(--muted)">Supervisor: Ms Duong • Founders: Hai Dong, Y Yen, Xuan Hieu, Thuy Duong</div>
+        </div>
+        <div style="color:var(--muted)">© 2025 Shipper Race — All rights reserved.</div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Cart panel -->
+  <div id="cartPanel" class="cart-panel" aria-hidden="true">
+    <h4 style="margin:0 0 8px 0">Giỏ hàng</h4>
+    <div id="cartItems"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px"><strong>Tổng</strong><strong id="cartTotal">0₫</strong></div>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button class="btn btn-ghost" id="clearCartBtn">Xóa giỏ</button>
+      <button class="btn btn-primary" id="checkoutBtn">Thanh toán</button>
+    </div>
+  </div>
+
+  <!-- Product modal -->
+  <div id="modal" class="modal" aria-hidden="true">
+    <div class="sheet card">
+      <div class="row">
+        <div class="left">
+          <div id="modalImg" style="height:260px;border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--muted)">Ảnh</div>
+        </div>
+        <div class="right">
+          <h3 id="modalTitle" style="margin-top:0">Tiêu đề</h3>
+          <div id="modalDesc" style="color:var(--muted)">Mô tả</div>
+          <div style="margin-top:12px;font-weight:800;color:var(--primary)" id="modalPrice">0₫</div>
+          <div style="margin-top:12px;display:flex;gap:8px">
+            <button class="btn btn-primary" id="modalAdd">Thêm vào giỏ</button>
+            <button class="btn btn-ghost" onclick="closeModal()">Đóng</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Checkout modal -->
+  <div id="checkoutModal" class="modal" aria-hidden="true">
+    <div class="sheet card">
+      <h3 style="margin-top:0">Thanh toán</h3>
+      <form id="checkoutForm">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <input name="buyer" placeholder="Họ và tên" required />
+          <input name="phone" placeholder="Số điện thoại / Email" required />
+          <input name="address" placeholder="Địa chỉ giao hàng" style="grid-column:1/3" required />
+        </div>
+        <div style="margin-top:12px;display:flex;justify-content:flex-end;gap:8px">
+          <button type="submit" class="btn btn-primary">Xác nhận</button>
+          <button type="button" class="btn btn-ghost" onclick="closeCheckoutModal()">Hủy</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // --- Data ---
+    const PRODUCTS = [
+      {id:1,slug:'fig-3d',name:'Mô hình Shipper 3D',price:250000,short:'Mô hình nhân vật shipper 3D sơn chi tiết',desc:'Mô hình 3D được sản xuất giới hạn. Chất liệu PVC cao cấp, cao ~10cm. Hộp có tem số lượng giới hạn.'},
+      {id:2,slug:'core-box',name:'Bộ trò chơi Shipper Race - Full',price:550000,short:'Core box + rulebook + 4 nhân vật',desc:'Bản đầy đủ: bản đồ, 4 nhân vật, 120 thẻ sự kiện, rulebook (VN + EN), hộp collector.'},
+      {id:3,slug:'cards-set',name:'Bộ thẻ bài mở rộng',price:120000,short:'Thẻ bài mở rộng',desc:'Bổ sung các event mới: tắc đường, tip, khách khó tính, shortcut.'},
+      {id:4,slug:'keychain',name:'Móc khóa nhân vật',price:80000,short:'Móc khóa acrylic nhân vật',desc:'Móc khóa 2 mặt, chất liệu acrylic dày, kèm vòng kim loại.'}
+    ];
+
+    // --- State ---
+    let cart = JSON.parse(localStorage.getItem('shipper_cart')||'{}');
+    let posts = JSON.parse(localStorage.getItem('shipper_posts')||'[]');
+
+    // --- Utils ---
+    const fmt = n => new Intl.NumberFormat('vi-VN').format(n) + '₫';
+    const el = id => document.getElementById(id);
+
+    // --- Render products ---
+    function renderProducts(){
+      const container = el('productGrid');
+      container.innerHTML = PRODUCTS.map(p=>`
+        <div class="card">
+          <div class="product-thumb">${p.slug.toUpperCase()}</div>
+          <div style="padding:12px;display:flex;flex-direction:column;gap:8px">
+            <div style="font-weight:800">${p.name}</div>
+            <div style="color:var(--muted);font-size:13px">${p.short}</div>
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div class="price">${fmt(p.price)}</div>
+              <div style="display:flex;gap:8px">
+                <button class="btn btn-ghost" onclick="openModal(${p.id})">Xem</button>
+                <button class="btn btn-primary" onclick="addToCart(${p.id})">Thêm</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // --- Cart functions ---
+    function saveCart(){ localStorage.setItem('shipper_cart', JSON.stringify(cart)); renderCart(); }
+    function addToCart(id, qty=1){ cart[id] = (cart[id]||0) + qty; saveCart(); openCartPanel(); }
+    function changeQty(id, delta){ cart[id] = (cart[id]||0) + delta; if(cart[id]<=0) delete cart[id]; saveCart(); }
+    function clearCart(){ cart = {}; saveCart(); closeCartPanel(); }
+
+    function renderCart(){
+      const ids = Object.keys(cart);
+      const itemsEl = el('cartItems');
+      if(!ids.length){ itemsEl.innerHTML = '<div style="color:var(--muted);padding:8px">Giỏ hàng trống</div>'; el('cartTotal').textContent='0₫'; el('cartBadge').style.display='none'; return }
+      el('cartBadge').style.display='inline-block'; el('cartBadge').textContent = ids.reduce((s,k)=>s+cart[k],0);
+
+      itemsEl.innerHTML = ids.map(id=>{
+        const p = PRODUCTS.find(x=>x.id==id);
+        const qty = cart[id];
+        return `
+          <div class="cart-item">
+            <div class="mini">${p.slug.toUpperCase()}</div>
+            <div style="flex:1">
+              <div style="font-weight:700">${p.name}</div>
+              <div style="color:var(--muted);font-size:13px">${fmt(p.price)} x ${qty}</div>
+            </div>
+            <div class="qty">
+              <button onclick="changeQty(${id},-1)">-</button>
+              <div>${qty}</div>
+              <button onclick="changeQty(${id},1)">+</button>
+            </div>
+          </div>
+        `
+      }).join('');
+
+      const total = ids.reduce((s,k)=> s + PRODUCTS.find(x=>x.id==k).price * cart[k],0);
+      el('cartTotal').textContent = fmt(total);
+    }
+
+    function openCartPanel(){ el('cartPanel').style.display='flex'; }
+    function closeCartPanel(){ el('cartPanel').style.display='none'; }
+
+    // --- Product modal ---
+    function openModal(id){
+      const p = PRODUCTS.find(x=>x.id==id);
+      el('modalTitle').textContent = p.name;
+      el('modalDesc').textContent = p.desc;
+      el('modalPrice').textContent = fmt(p.price);
+      el('modalImg').textContent = p.slug.toUpperCase();
+      el('modal').style.display='flex';
+
+      el('modalAdd').onclick = ()=>{ addToCart(id); closeModal(); };
+    }
+    function closeModal(){ el('modal').style.display='none'; }
+
+    // --- Checkout flow ---
+    function openCheckoutModal(){ if(!Object.keys(cart).length){ alert('Giỏ hàng trống'); return } el('checkoutModal').style.display='flex'; }
+    function closeCheckoutModal(){ el('checkoutModal').style.display='none'; }
+
+    el('checkoutForm').addEventListener('submit', e=>{
+      e.preventDefault();
+      const data = new FormData(e.target);
+      const order = {id: 'ORD'+Date.now(),buyer: data.get('buyer'), contact: data.get('phone'), address: data.get('address'), items: cart, total: Object.keys(cart).reduce((s,k)=>s+PRODUCTS.find(x=>x.id==k).price*cart[k],0), created: new Date().toISOString() };
+      const orders = JSON.parse(localStorage.getItem('shipper_orders')||'[]');
+      orders.push(order); localStorage.setItem('shipper_orders', JSON.stringify(orders));
+      alert('Đặt hàng thành công (demo). Mã đơn: '+order.id);
+      clearCart(); closeCheckoutModal(); el('checkoutForm').reset();
+    });
+
+    // --- Contact form ---
+    el('contactForm').addEventListener('submit', e=>{
+      e.preventDefault();
+      const f = new FormData(e.target);
+      const msg = {id:'MSG'+Date.now(),name:f.get('name'),contact:f.get('contact'),message:f.get('message'),created:new Date().toISOString()};
+      const msgs = JSON.parse(localStorage.getItem('shipper_contacts')||'[]'); msgs.push(msg); localStorage.setItem('shipper_contacts', JSON.stringify(msgs));
+      alert('Cám ơn! Chúng tôi đã nhận được thông tin của bạn.');
+      e.target.reset();
+    });
+
+    // --- Community posts ---
+    function renderPosts(){
+      const box = el('posts');
+      if(!posts.length){ box.innerHTML = '<div style="color:var(--muted);padding:8px">Chưa có bài đăng nào. Bạn có thể là người đầu tiên!</div>'; return }
+      box.innerHTML = posts.slice().reverse().map(p=>`<div class="post"><div style="font-weight:700">${escapeHtml(p.name||'Người chơi')}</div><div style="color:var(--muted);font-size:13px;margin-top:6px">${escapeHtml(p.content)}</div><div style="color:var(--muted);font-size:12px;margin-top:8px">${new Date(p.created).toLocaleString()}</div></div>`).join('');
+    }
+
+    function addPost(){ const v=el('postInput').value.trim(); if(!v) return alert('Nhập nội dung'); const p={name:'Người chơi',content:v,created:new Date().toISOString()}; posts.push(p); localStorage.setItem('shipper_posts', JSON.stringify(posts)); el('postInput').value=''; renderPosts(); }
+
+    function escapeHtml(s){ return s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
+
+    // --- Nav smooth ---
+    document.querySelectorAll('[data-link]').forEach(a=>a.addEventListener('click', e=>{ e.preventDefault(); const href=a.getAttribute('href').slice(1); goTo(href); document.querySelectorAll('nav a').forEach(x=>x.classList.remove('active')); a.classList.add('active'); }))
+    function goTo(id){ const elTarget = document.getElementById(id); if(elTarget) elTarget.scrollIntoView({behavior:'smooth'}); }
+
+    // open trailer placeholder
+    function openTrailer(){ alert('Trailer placeholder — chèn iframe YouTube tại đây.'); }
+
+    // init
+    function init(){ renderProducts(); renderCart(); renderPosts();
+      // load cart count
+      const total = Object.keys(cart).reduce((s,k)=>s+cart[k],0); if(total) el('cartBadge').style.display='inline-block'; el('cartBadge').textContent = total;
+
+      // event bindings
+      el('openCartBtn').addEventListener('click', ()=>{ el('cartPanel').style.display = el('cartPanel').style.display==='none'||el('cartPanel').style.display==='' ? 'flex' : 'none'; });
+      el('clearCartBtn').addEventListener('click', ()=>{ if(confirm('Xóa toàn bộ giỏ hàng?')) clearCart(); });
+      el('checkoutBtn').addEventListener('click', ()=>openCheckoutModal());
+
+      // keyboard: close modals with ESC
+      document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ closeModal(); closeCheckoutModal(); el('cartPanel').style.display='none'; } });
+    }
+
+    init();
+
+    // expose some functions to be used inline
+    window.openModal = openModal;
+    window.closeModal = closeModal;
+    window.addToCart = addToCart;
+    window.changeQty = changeQty;
+    window.openTrailer = openTrailer;
+    window.openCheckoutModal = openCheckoutModal;
+    window.closeCheckoutModal = closeCheckoutModal;
+    window.addPost = addPost;
+  </script>
+</body>
+</html>
